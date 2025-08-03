@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Literary Pub - Your Book</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#222222" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Literary Pub</h1>
+    <p>by Author Name</p>
+  </header>
+  <main>
+    <section>
+      <h2>Thank you for your purchase!</h2>
+      <div id="install-ui">
+        <button id="install-btn" class="buy-btn">Download/Install App</button>
+      </div>
+      <div id="ios-instructions" style="display:none;">
+        <p><strong>How to Install this Book App on iPhone/iPad:</strong></p>
+        <ol>
+          <li>Tap the <strong>Share</strong> icon in Safari (the square with arrow pointing up).</li>
+          <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+          <li>Open the app from your home screen for the full experience.</li>
+        </ol>
+      </div>
+      <div id="book-content">
+        <h2>Chapter 1</h2>
+        <p>This is the full book content, now unlocked for you.</p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Author Name</p>
+  </footer>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    // Helper to detect iOS
+    function isIos() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    // Always show button, enable prompt only if available
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (isIos()) {
+        document.getElementById('install-btn').style.display = 'none';
+        document.getElementById('ios-instructions').style.display = 'block';
+      } else {
+        document.getElementById('install-btn').addEventListener('click', function() {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choiceResult) {
+              deferredPrompt = null;
+            });
+          } else {
+            alert("If you don't see an install prompt, look for an install icon in your browser's address bar.");
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
