@@ -10,7 +10,7 @@
       background: #f2f2f2;
       font-family: sans-serif;
       color: #333;
-      user-select: none;        /* Disable text selection */
+      user-select: none;
       -webkit-user-select: none;
       -ms-user-select: none;
       overflow: hidden;
@@ -34,7 +34,7 @@
       font-size: 18px;
     }
 
-    /* Dancing arrow animation */
+    /* iOS install banner */
     #ios-install-banner {
       display: none;
       position: fixed;
@@ -48,22 +48,45 @@
       text-align: center;
       z-index: 9999;
       font-family: sans-serif;
-      user-select: auto; /* allow text select in banner */
+      user-select: auto;
     }
 
-    #ios-install-banner .arrow {
+    #ios-install-banner .share-icon {
       display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
       margin: 0 8px;
-      color: #1e90ff;
-      font-weight: bold;
-      animation: dance 1s infinite;
+      position: relative;
+      animation: bounce 1.2s infinite;
     }
 
-    @keyframes dance {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-5px) rotate(15deg); }
-      50% { transform: translateY(0) rotate(0deg); }
-      75% { transform: translateY(-5px) rotate(-15deg); }
+    .share-icon::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #1e90ff;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .share-icon::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      bottom: 4px;
+      width: 10px;
+      height: 10px;
+      border-left: 2px solid #1e90ff;
+      border-top: 2px solid #1e90ff;
+      transform: rotate(45deg);
+      transform-origin: bottom left;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     #ios-install-banner button {
@@ -85,50 +108,38 @@
 
   <!-- iOS Install Banner -->
   <div id="ios-install-banner" role="region" aria-label="Install instructions for iOS">
-    <span>To install this app, tap the </span>
-    <span class="arrow" aria-hidden="true">➤</span>
-    <span> Share button then <strong>Add to Home Screen</strong></span>
+    <span>To install this app, tap the</span>
+    <span class="share-icon" aria-hidden="true"></span>
+    <span>button then <strong>Add to Home Screen</strong></span>
     <button id="close-ios-banner" aria-label="Close install instructions">✕</button>
   </div>
 
   <script>
-    // 🔒 Disable right-click context menu
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    });
+    // 🔐 Disable right-click and clipboard
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    ['copy', 'cut', 'paste'].forEach(evt => document.addEventListener(evt, e => e.preventDefault()));
 
-    // 🔒 Block copy, cut, paste
-    ['copy', 'cut', 'paste'].forEach(evt =>
-      document.addEventListener(evt, function(e) {
-        e.preventDefault();
-      })
-    );
-
-    // 🔒 Block keyboard shortcuts (Ctrl+C, Ctrl+S, Ctrl+P, etc.)
+    // 🔐 Disable common shortcuts (Ctrl/Cmd + C, S, P, etc.)
     document.addEventListener('keydown', function(e) {
-      if (
-        (e.ctrlKey || e.metaKey) &&
-        ['c', 'x', 'v', 's', 'p', 'u'].includes(e.key.toLowerCase())
-      ) {
+      if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'v', 's', 'p', 'u'].includes(e.key.toLowerCase())) {
         e.preventDefault();
       }
     });
 
-    // 🔒 Hide content when visibility is lost (e.g., tab switch)
+    // 🔐 Hide content when tab is inactive
     document.addEventListener("visibilitychange", function() {
       if (document.hidden) {
         document.body.innerHTML = "<h2>Content hidden for security.</h2>";
       }
     });
 
-    // iOS Install Banner Logic
+    // 📲 iOS Install Banner
     (function() {
       const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
       const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
       const banner = document.getElementById('ios-install-banner');
       const closeBtn = document.getElementById('close-ios-banner');
 
-      // Show banner only on iOS Safari, not in standalone mode, and if not dismissed before
       if (isIos && !isInStandaloneMode && !localStorage.getItem('iosInstallBannerDismissed')) {
         banner.style.display = 'block';
       }
@@ -138,8 +149,19 @@
         localStorage.setItem('iosInstallBannerDismissed', 'true');
       });
     })();
+
+    // 🔁 Redirect if accessed from a shared link
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref === 'shared') {
+        alert('This content requires a purchase. Redirecting...');
+        window.location.href = '/purchase.html'; // ← Change this if needed
+      }
+    })();
   </script>
 </body>
 </html>
+
 
 
