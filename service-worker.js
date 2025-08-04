@@ -5,8 +5,8 @@ const urlsToCache = [
   '/index.html',
   '/unlocked.html',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/icon-pwa.png',
+  '/icon-cover.png'
   // Add other assets here only if they exist
 ];
 
