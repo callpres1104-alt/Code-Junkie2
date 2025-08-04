@@ -7,41 +7,74 @@
   <style>
     body {
       margin: 0;
-      background: #f4f4f4;
+      background: #f2f2f2;
       font-family: sans-serif;
-      user-select: none;
+      color: #333;
+      user-select: none;        /* Disable text selection */
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      overflow: hidden;
     }
-    #content {
-      padding: 20px;
-      background: white;
+
+    .container {
       max-width: 700px;
-      margin: 50px auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      margin: 60px auto;
+      padding: 30px;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <div id="content">
-    <h1>Private Document</h1>
-    <p>This content is protected and intended for reading only.</p>
+  <div class="container">
+    <h1>Confidential Reading Only</h1>
+    <p>This document is for reading purposes only. Copying, sharing, or downloading is disabled. Your cooperation is appreciated.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eget erat eu mauris cursus tincidunt. Nulla facilisi.</p>
   </div>
 
   <script>
-    // Block visibility change (anti-screenshot hint)
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        document.body.innerHTML = "<h2>Content hidden</h2>";
+    // 🔒 Disable right-click context menu
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
+    // 🔒 Block copy, cut, paste
+    ['copy', 'cut', 'paste'].forEach(evt =>
+      document.addEventListener(evt, function(e) {
+        e.preventDefault();
+      })
+    );
+
+    // 🔒 Block keyboard shortcuts (Ctrl+C, Ctrl+S, Ctrl+P, etc.)
+    document.addEventListener('keydown', function(e) {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        ['c', 'x', 'v', 's', 'p', 'u'].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
       }
     });
 
-    // Disable context menu
-    window.addEventListener('contextmenu', e => e.preventDefault());
+    // 🔒 Hide content when visibility is lost (e.g., tab switch)
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden) {
+        document.body.innerHTML = "<h2>Content hidden for security.</h2>";
+      }
+    });
 
-    // Disable selection
-    document.body.style.userSelect = "none";
-
-    // Optional: watermark user ID or email here dynamically
+    // 🛑 Don’t use Web Share API at all — nothing to invoke
   </script>
 </body>
 </html>
+
 
