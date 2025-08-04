@@ -4,13 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secure Reader</title>
+
+  <!-- ✅ PWA Support -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#222222">
+
+  <!-- ✅ iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Literary Pub Book">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     body {
       margin: 0;
       background: #f2f2f2;
       font-family: sans-serif;
       color: #333;
-      user-select: none;        /* Disable text selection */
+      user-select: none;
       -webkit-user-select: none;
       -ms-user-select: none;
       overflow: hidden;
@@ -72,8 +83,22 @@
       }
     });
 
-    // 🛑 Don’t use Web Share API at all — nothing to invoke
+    // ✅ Detect if in standalone/PWA mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log("✅ Running as PWA (standalone mode)");
+    } else {
+      console.log("❌ Not running as PWA (still in browser tab)");
+    }
+
+    // ✅ Optional: register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('✅ Service worker registered'));
+    }
   </script>
+</body>
+</html>
+
 </body>
 </html>
 
