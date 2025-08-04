@@ -1,7 +1,8 @@
 {
   "name": "Literary Pub Book",
   "short_name": "LiteraryPub",
-  "start_url": "unlocked.html",
+  "start_url": "/unlocked.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#fafafa",
   "theme_color": "#222222",
@@ -18,3 +19,4 @@
     }
   ]
 }
+
