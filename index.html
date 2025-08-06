@@ -38,6 +38,26 @@
       flex-direction: column;
       justify-content: center;
     }
+        .container, .cover {
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 30px;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .cover img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
 
     h1 {
       font-size: 24px;
@@ -132,6 +152,13 @@
   </style>
 </head>
 <body>
+  <!-- Cover Screen -->
+  <div class="cover" id="cover-screen">
+    <img src="icon-pwa.png" alt="Book Cover">
+    <div id="start-btn">
+      <button>Start Reading</button>
+    </div>
+  </div>
   <div class="container" id="page-container">
     <!-- Page content will be inserted here -->
   </div>
