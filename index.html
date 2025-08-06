@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <link rel="manifest" href="/manifest.json">
+    <!-- Android PWA Support -->
+  <meta name="theme-color" content="#222222" />
+
+
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="In the Meantime">
+
   <link rel="apple-touch-icon" href="icon-pwa.png">
 
   <title>Secure Reader</title>
@@ -162,7 +171,27 @@
         window.location.href = '/purchase.html'; // ← Change this if needed
       }
     })();
+  </script>  <!-- JS: Service Worker + Install Detection -->
+  <script>
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('✅ Service Worker registered:', reg.scope);
+      }).catch(err => {
+        console.error('❌ Service Worker error:', err);
+      });
+    }
+
+
+    // Check if running in standalone mode
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) {
+      console.log('✅ PWA is running in standalone mode (URL bar should be hidden)');
+    } else {
+      console.log('ℹ️ PWA is running in browser tab (URL bar will be visible)');
+    }
   </script>
+
 </body>
 </html>
 
