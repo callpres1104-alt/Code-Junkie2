@@ -165,66 +165,35 @@
     <button id="close-ios-banner" aria-label="Close install instructions">✕</button>
   </div>
 
+
   <script>
-    // 🔐 Disable right-click and clipboard
     document.addEventListener('contextmenu', e => e.preventDefault());
     ['copy', 'cut', 'paste'].forEach(evt => document.addEventListener(evt, e => e.preventDefault()));
-
-    // 🔐 Disable common shortcuts (Ctrl/Cmd + C, S, P, etc.)
     document.addEventListener('keydown', function(e) {
       if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'v', 's', 'p', 'u'].includes(e.key.toLowerCase())) {
         e.preventDefault();
       }
     });
 
-    // Remove the "content hidden for security" on visibility change; no action needed here
-
-    // 📲 iOS Install Banner
     (function() {
-      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-      const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
+      const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+      const isInStandaloneMode = ('standalone' in navigator) && navigator.standalone;
       const banner = document.getElementById('ios-install-banner');
-      const closeBtn = document.getElementById('close-ios-banner');
-
       if (isIos && !isInStandaloneMode && !localStorage.getItem('iosInstallBannerDismissed')) {
         banner.style.display = 'block';
       }
-
-      closeBtn.addEventListener('click', () => {
+      document.getElementById('close-ios-banner').addEventListener('click', () => {
         banner.style.display = 'none';
         localStorage.setItem('iosInstallBannerDismissed', 'true');
       });
     })();
 
-    // 🔁 Redirect if accessed from a shared link
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const ref = urlParams.get('ref');
-      if (ref === 'shared') {
-        alert('This content requires a purchase. Redirecting...');
-        window.location.href = '/purchase.html'; // ← Change this if needed
-      }
-    })();
-
-    // Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(reg => {
         console.log('✅ Service Worker registered:', reg.scope);
-      }).catch(err => {
-        console.error('❌ Service Worker error:', err);
-      });
+      }).catch(err => console.error('❌ Service Worker error:', err));
     }
 
-    // Check if running in standalone mode
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (isStandalone) {
-      console.log('✅ PWA is running in standalone mode (URL bar should be hidden)');
-    } else {
-      console.log('ℹ️ PWA is running in browser tab (URL bar will be visible)');
-    }
-
-
-    // ==== PAGE TURNER CODE ====
     const bookPages = [
       { chapter: "Chapter 1", text: "It was a dark and stormy night..." },
       { chapter: "Chapter 1", text: "The wind howled through the trees." },
@@ -233,21 +202,25 @@
     ];
 
     let currentPage = 0;
-
+    const coverScreen = document.getElementById('cover-screen');
     const pageContainer = document.getElementById('page-container');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
+    const nav = document.querySelector('.nav');
 
     function renderPage() {
       const page = bookPages[currentPage];
-      pageContainer.innerHTML = `
-        <h1>${page.chapter}</h1>
-        <p>${page.text}</p>
-      `;
-
+      pageContainer.innerHTML = `<h1>${page.chapter}</h1><p>${page.text}</p>`;
       prevBtn.disabled = currentPage === 0;
       nextBtn.disabled = currentPage === bookPages.length - 1;
     }
+
+    document.getElementById('start-btn').addEventListener('click', () => {
+      coverScreen.style.display = 'none';
+      pageContainer.style.display = 'flex';
+      nav.style.display = 'block';
+      renderPage();
+    });
 
     prevBtn.addEventListener('click', () => {
       if (currentPage > 0) {
@@ -262,9 +235,6 @@
         renderPage();
       }
     });
-
-    // Initial render
-    renderPage();
   </script>
 </body>
 </html>
