@@ -221,7 +221,7 @@
 
  const bookPages = [
       { chapter: "Chapter 1", text: "A New Era of Labor" },
-      { chapter: "Chapter 1", text: "In 1990, a “job” meant a career, /a steady paycheck, perhaps a pension, a place to go each day, and coworkers to share coffee breaks with. Today, that definition feels increasingly outdated. In 2025, millions of workers are juggling multiple income streams, driving for ride-share apps at night while freelancing graphic design during the day. We are witnessing a labor transformation unlike any before—a shift not just in where or how we work, but in what work even means." },
+      { chapter: "Chapter 1", text: "In 1990, a “job” meant a career, /a steady paycheck, perhaps a pension, a place to go each day,<br><br> and coworkers to share coffee breaks with. Today, that definition feels increasingly outdated. In 2025, millions of workers are juggling multiple income streams, driving for ride-share apps at night while freelancing graphic design during the day. We are witnessing a labor transformation unlike any before—a shift not just in where or how we work, but in what work even means." },
       { chapter: "Chapter 2", text: "A new day began in the village." },
       { chapter: "Chapter 2", text: "Footsteps echoed on the wet cobblestones." }
     ];
@@ -235,6 +235,7 @@
 
     function renderPage() {
       const page = bookPages[currentPage];
+       const formattedText = page.text.split('/').map(p => p.trim()).join('<br><br>');
       pageContainer.innerHTML = `<h1>${page.chapter}</h1><p>${page.text}</p>`;
       prevBtn.disabled = currentPage === 0;
       nextBtn.disabled = currentPage === bookPages.length - 1;
