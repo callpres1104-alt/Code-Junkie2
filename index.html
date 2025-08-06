@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <link rel="manifest" href="/manifest.json">
-    <!-- Android PWA Support -->
+  <link rel="manifest" href="/manifest.json">
+  <!-- Android PWA Support -->
   <meta name="theme-color" content="#222222" />
-
 
   <!-- iOS PWA Support -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,6 +33,10 @@
       padding: 30px;
       background: white;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     h1 {
@@ -44,6 +47,23 @@
     p {
       line-height: 1.6;
       font-size: 18px;
+    }
+
+    /* Navigation buttons */
+    .nav {
+      text-align: center;
+      margin-top: 30px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 25px;
+      margin: 0 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
     }
 
     /* iOS install banner */
@@ -112,10 +132,13 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Confidential Reading Only</h1>
-    <p>This document is for reading purposes only. Copying, sharing, or downloading is disabled. Your cooperation is appreciated.</p>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eget erat eu mauris cursus tincidunt. Nulla facilisi.</p>
+  <div class="container" id="page-container">
+    <!-- Page content will be inserted here -->
+  </div>
+
+  <div class="nav">
+    <button id="prev-btn">Previous</button>
+    <button id="next-btn">Next</button>
   </div>
 
   <!-- iOS Install Banner -->
@@ -138,12 +161,7 @@
       }
     });
 
-    // 🔐 Hide content when tab is inactive
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) {
-        document.body.innerHTML = "<h2>Content hidden for security.</h2>";
-      }
-    });
+    // Remove the "content hidden for security" on visibility change; no action needed here
 
     // 📲 iOS Install Banner
     (function() {
@@ -171,8 +189,7 @@
         window.location.href = '/purchase.html'; // ← Change this if needed
       }
     })();
-  </script>  <!-- JS: Service Worker + Install Detection -->
-  <script>
+
     // Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(reg => {
@@ -182,7 +199,6 @@
       });
     }
 
-
     // Check if running in standalone mode
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
@@ -190,10 +206,53 @@
     } else {
       console.log('ℹ️ PWA is running in browser tab (URL bar will be visible)');
     }
-  </script>
 
+
+    // ==== PAGE TURNER CODE ====
+    const bookPages = [
+      { chapter: "Chapter 1", text: "It was a dark and stormy night..." },
+      { chapter: "Chapter 1", text: "The wind howled through the trees." },
+      { chapter: "Chapter 2", text: "A new day began in the village." },
+      { chapter: "Chapter 2", text: "Footsteps echoed on the wet cobblestones." }
+    ];
+
+    let currentPage = 0;
+
+    const pageContainer = document.getElementById('page-container');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function renderPage() {
+      const page = bookPages[currentPage];
+      pageContainer.innerHTML = `
+        <h1>${page.chapter}</h1>
+        <p>${page.text}</p>
+      `;
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === bookPages.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < bookPages.length - 1) {
+        currentPage++;
+        renderPage();
+      }
+    });
+
+    // Initial render
+    renderPage();
+  </script>
 </body>
 </html>
+
 
 
 
