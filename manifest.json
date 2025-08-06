@@ -1,7 +1,7 @@
 {
-  "name": "Literary Pub Book",
-  "short_name": "LiteraryPub",
-  "start_url": "/unlocked.html",
+  "name": "In the Meantime",
+  "short_name": "Meantime",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#fff",
