@@ -258,6 +258,20 @@
         renderPage();
       }
     });
+    const chapterSelect = document.getElementById('chapter-select');
+
+chapterSelect.addEventListener('change', () => {
+  const selectedChapter = chapterSelect.value;
+  if (!selectedChapter) return;
+
+  const index = bookPages.findIndex(p => p.chapter === `Chapter ${selectedChapter}`);
+  if (index !== -1) {
+    currentPage = index;
+    renderPage();
+  } else {
+    alert("Chapter not found.");
+  }
+});
   </script>
 </body>
 </html>
