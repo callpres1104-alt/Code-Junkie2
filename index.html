@@ -219,63 +219,30 @@
       }).catch(err => console.error('❌ Service Worker error:', err));
     }
 
-   const bookPages = [
-      { chapter: "Chapter 1", text: "A New Era of Labor" },
-      { chapter: "Chapter 1", text: "In 1990, a “job” meant a career,\na steady paycheck, perhaps a pension,\na place to go each day, and coworkers to share coffee breaks with. Today, that definition feels increasingly outdated. In 2025, millions of workers are juggling multiple income streams, driving for ride-share apps at night while freelancing graphic design during the day. We are witnessing a labor transformation unlike any before—a shift not just in where or how we work, but in what work even means." },
-      { chapter: "Chapter 2", text: "A new day began in the village." },
-      { chapter: "Chapter 2", text: "Footsteps echoed on the wet cobblestones." }
-    ];
+   const page = bookPages[currentPage];
+  // Split the text by single line breaks into paragraphs
+  const paragraphs = page.text.split('\n');
+  // Wrap each paragraph with <p>
+  const formattedText = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+  pageContainer.innerHTML = `<h1>${page.chapter}</h1>${formattedText}`;
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage === bookPages.length - 1;
+}
+Full snippet to replace in your HTML:
+html
+Copy
+Edit
+<script>
+  // ... your existing code above remains the same ...
 
-    let currentPage = 0;
-    const coverScreen = document.getElementById('cover-screen');
-    const pageContainer = document.getElementById('page-container');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const nav = document.querySelector('.nav');
-
-    function renderPage() {
-      const page = bookPages[currentPage];
-      // Replace \n with <br> so single line breaks are respected inside paragraphs
-      const formattedText = page.text.replace(/\n/g, '<br>');
-      pageContainer.innerHTML = `<h1>${page.chapter}</h1><p>${formattedText}</p>`;
-      prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = currentPage === bookPages.length - 1;
-    }
-
-    document.getElementById('start-btn').addEventListener('click', () => {
-      coverScreen.style.display = 'none';
-      pageContainer.style.display = 'flex';
-      nav.style.display = 'block';
-      renderPage();
-    });
-
-    prevBtn.addEventListener('click', () => {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (currentPage < bookPages.length - 1) {
-        currentPage++;
-        renderPage();
-      }
-    });
-
-    const chapterSelect = document.getElementById('chapter-select');
-
-    chapterSelect.addEventListener('change', () => {
-      const selectedChapter = chapterSelect.value;
-      if (!selectedChapter) return;
-
-      const index = bookPages.findIndex(p => p.chapter === `Chapter ${selectedChapter}`);
-      if (index !== -1) {
-        currentPage = index;
-        renderPage();
-      } else {
-        alert("Chapter not found.");
-      }
+  function renderPage() {
+    const page = bookPages[currentPage];
+    const paragraphs = page.text.split('\n');
+    const formattedText = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+    pageContainer.innerHTML = `<h1>${page.chapter}</h1>${formattedText}`;
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = currentPage === bookPages.length - 1;
+  }
 });
   </script>
 </body>
