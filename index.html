@@ -219,9 +219,9 @@
       }).catch(err => console.error('❌ Service Worker error:', err));
     }
 
-    const bookPages = [
+   const bookPages = [
       { chapter: "Chapter 1", text: "A New Era of Labor" },
-      { chapter: "Chapter 1", text: "In 1990, a “job” meant a career, a steady paycheck, perhaps a pension, a place to go each day, and coworkers to share coffee breaks with. Today, that definition feels increasingly outdated. In 2025, millions of workers are juggling multiple income streams, driving for ride-share apps at night while freelancing graphic design during the day. We are witnessing a labor transformation unlike any before—a shift not just in where or how we work, but in what work even means." },
+      { chapter: "Chapter 1", text: "In 1990, a “job” meant a career,\na steady paycheck, perhaps a pension,\na place to go each day, and coworkers to share coffee breaks with. Today, that definition feels increasingly outdated. In 2025, millions of workers are juggling multiple income streams, driving for ride-share apps at night while freelancing graphic design during the day. We are witnessing a labor transformation unlike any before—a shift not just in where or how we work, but in what work even means." },
       { chapter: "Chapter 2", text: "A new day began in the village." },
       { chapter: "Chapter 2", text: "Footsteps echoed on the wet cobblestones." }
     ];
@@ -235,7 +235,9 @@
 
     function renderPage() {
       const page = bookPages[currentPage];
-      pageContainer.innerHTML = `<h1>${page.chapter}</h1><p>${page.text}</p>`;
+      // Replace \n with <br> so single line breaks are respected inside paragraphs
+      const formattedText = page.text.replace(/\n/g, '<br>');
+      pageContainer.innerHTML = `<h1>${page.chapter}</h1><p>${formattedText}</p>`;
       prevBtn.disabled = currentPage === 0;
       nextBtn.disabled = currentPage === bookPages.length - 1;
     }
@@ -260,19 +262,20 @@
         renderPage();
       }
     });
+
     const chapterSelect = document.getElementById('chapter-select');
 
-chapterSelect.addEventListener('change', () => {
-  const selectedChapter = chapterSelect.value;
-  if (!selectedChapter) return;
+    chapterSelect.addEventListener('change', () => {
+      const selectedChapter = chapterSelect.value;
+      if (!selectedChapter) return;
 
-  const index = bookPages.findIndex(p => p.chapter === `Chapter ${selectedChapter}`);
-  if (index !== -1) {
-    currentPage = index;
-    renderPage();
-  } else {
-    alert("Chapter not found.");
-  }
+      const index = bookPages.findIndex(p => p.chapter === `Chapter ${selectedChapter}`);
+      if (index !== -1) {
+        currentPage = index;
+        renderPage();
+      } else {
+        alert("Chapter not found.");
+      }
 });
   </script>
 </body>
