@@ -63,7 +63,7 @@
       padding: 0.5rem;
       border-radius: 6px;
       border: 1px solid #ccc;
-      width: 200px;
+      width: 100px;
     }
 
     .search-container button {
@@ -191,6 +191,7 @@
     const chapterContent = document.getElementById("chapterContent");
     const typewriterDiv = document.getElementById("typewriter");
 
+  let typewriterRunning = true;
     // Populate book dropdown
     for (let book in books) {
       const option = document.createElement("option");
@@ -218,71 +219,82 @@
       const chapter = chapterSelect.value;
       const url = `https://bible-api.com/${encodeURIComponent(book)}+${chapter}?translation=kjv`;
 
-      chapterContent.innerHTML = `<h2>${book} ${chapter}</h2><p>Loading...</p>`;
+     // Stop the typewriter
+    typewriterRunning = false;
+    typewriterDiv.textContent = '';
 
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          if (!data.verses) {
-            chapterContent.innerHTML = `<p>Error loading text.</p>`;
-            return;
-          }
+    chapterContent.innerHTML = `<h2>${book} ${chapter}</h2><p>Loading...</p>`;
 
-          chapterContent.innerHTML = `<h2>${book} ${chapter}</h2>`;
-          data.verses.forEach(verse => {
-            chapterContent.innerHTML += `
-              <div class="verse">
-                <span class="verse-number">${verse.verse}</span>${verse.text}
-              </div>
-            `;
-          });
-        })
-        .catch(() => {
-          chapterContent.innerHTML = `<p>Failed to load. Try again later.</p>`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.verses) {
+          chapterContent.innerHTML = `<p>Error loading text.</p>`;
+          return;
+        }
+
+        chapterContent.innerHTML = `<h2>${book} ${chapter}</h2>`;
+        data.verses.forEach(verse => {
+          chapterContent.innerHTML += `
+            <div class="verse">
+              <span class="verse-number">${verse.verse}</span>${verse.text}
+            </div>
+          `;
         });
+      })
+      .catch(() => {
+        chapterContent.innerHTML = `<p>Failed to load. Try again later.</p>`;
+      });
+  }
+
+  function openBLB() {
+    const word = document.getElementById("blbSearchInput").value.trim();
+    if (word.length === 0) {
+      alert("Please enter a word to look up.");
+      return;
     }
+    const url = `https://www.blueletterbible.org/search/search.cfm?Criteria=${encodeURIComponent(word)}&t=KJV`;
+    window.open(url, '_blank');
+  }
 
-    function openBLB() {
-      const word = document.getElementById("blbSearchInput").value.trim();
-      if (word.length === 0) {
-        alert("Please enter a word to look up.");
-        return;
-      }
-      const url = `https://www.blueletterbible.org/search/search.cfm?Criteria=${encodeURIComponent(word)}&t=KJV`;
-      window.open(url, '_blank');
+  // Typewriter effect logic
+  const messages = [
+    "Hello, how are you today...",
+    "Welcome...",
+    "Explore the Word of God.",
+    "Search a verse, or read a chapter...",
+    "Your journey begins here..."
+  ];
+
+  let msgIndex = 0;
+  let charIndex = 0;
+
+  function typeWriter() {
+    if (!typewriterRunning) return;
+
+    const currentMsg = messages[msgIndex];
+    if (charIndex < currentMsg.length) {
+      typewriterDiv.textContent += currentMsg.charAt(charIndex);
+      charIndex++;
+      setTimeout(typeWriter, 80);
+    } else {
+      setTimeout(() => {
+        if (!typewriterRunning) return;
+        typewriterDiv.textContent = '';
+        charIndex = 0;
+        msgIndex = (msgIndex + 1) % messages.length;
+        typeWriter();
+      }, 2000);
     }
+  }
 
-    // Typewriter Effect
-    const messages = [
-      "Hello, how are you today...",
-      "Welcome...",
-      "Explore the Word of God.",
-      "Search a verse, or read a chapter...",
-      "Your journey begins here..."
-    ];
-
-    let msgIndex = 0;
-    let charIndex = 0;
-
-    function typeWriter() {
-      if (chapterContent.innerText.trim() !== "") return; // Stop if chapter is loaded
-      const currentMsg = messages[msgIndex];
-      if (charIndex < currentMsg.length) {
-        typewriterDiv.textContent += currentMsg.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeWriter, 80);
-      } else {
-        setTimeout(() => {
-          typewriterDiv.textContent = '';
-          charIndex = 0;
-          msgIndex = (msgIndex + 1) % messages.length;
-          typeWriter();
-        }, 2000);
-      }
+  // Start the animation only if no chapter is selected
+  window.addEventListener("load", () => {
+    if (chapterContent.innerText.trim() === "") {
+      typewriterRunning = true;
+      typeWriter();
     }
-
-    // Start animation on load
-    window.addEventListener("load", typeWriter);
-  </script>
+  });
+</script>
 </body>
 </html>
