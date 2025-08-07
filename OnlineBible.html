@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Modern Bible Reader</title>
+  <title>KJV Bible Tool</title>
   <style>
     :root {
-      --bg: #f9f9fb;
-      --text: #1c1c1e;
+      --bg: #ffffff;
+      --text: #000;
       --accent: #0066cc;
-      --font: 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
+      --font: 'Segoe UI', 'Inter', sans-serif;
     }
 
     body {
@@ -17,82 +17,105 @@
       background: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 1rem;
+      padding: 2rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
-    header {
+       .logo {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--accent);
+      color: white;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      margin-bottom: 2rem;
-      text-color: blue
+      line-height: 1.1;
+      z-index: 10;
     }
 
-    h1 {
-      font-size: 2rem;
-      color: var(--accent);
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 0.3rem;
-      margin-top: 0;
+    .main-content {
+      margin-top: 4rem; /* Space below the logo */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-container input {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 200px;
+    }
+
+    .search-container button {
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
     nav {
-      background: #eaeaea;
-      border: 0px none #fff;
-      border-radius: 8px;
+      background: var(--accent);
+      border-radius: 10px;
       padding: 1rem;
-      width: 100%;
-      max-width: 700px;
-      margin-bottom: 2rem;
-      box-shadow: 0 0px 0px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    select, button {
+    nav select, nav button {
       font-size: 1rem;
       padding: 0.5rem;
-      border: .0px solid #fff;
+      border: none;
       border-radius: 6px;
     }
 
-    button {
-      background: var(--accent);
-      color: white;
-      border: none;
+    nav button {
+      background: white;
+      color: var(--accent);
+      font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
-      background: #0052a3;
+    nav button:hover {
+      background: #f0f0f0;
     }
 
     .chapter {
       max-width: 700px;
-      display: none;
-    }
-
-    .chapter.active {
-      display: block;
+      width: 100%;
     }
 
     .chapter-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 0px;
-      
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      padding: 1rem;
     }
 
     .chapter-content h2 {
-     color: var(--accent);
+      color: var(--accent);
       font-size: 1.5rem;
-      padding-bottom: 0.3rem;
-       border-bottom: 2px color: #fff;
-      margin-top: 0;
       margin-bottom: 1rem;
     }
 
@@ -107,40 +130,41 @@
       margin-right: 0.3rem;
     }
 
+    #typewriter {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-top: 2rem;
+      font-style: italic;
+      color: #333;
+      min-height: 1.5em;
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-      .chapter-content {
-        padding: 1rem;
+      .search-container input {
+        width: 100%;
+        max-width: 300px;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>KJV Bible Tool</h1>
-    <p> For words you'd like to search, type here:</p><div style="margin-bottom: 2rem; text-align: center;">
-  <input type="text" id="blbSearchInput" placeholder="Words and Phrases" style="padding: 0.5rem; width: 60%; max-width: 400px; border-radius: 6px; border: 1px solid #ccc;">
-  <button onclick="openBLB()" style="padding: 0.5rem 1rem; margin-left: 0.5rem; background-color: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer;">Search</button>
-</div>
-    
-  </header>
+  <div class="logo">KJV<br>Bible</div>
+
+  <div class="search-container">
+    <input type="text" id="blbSearchInput" placeholder="Words and Phrases" />
+    <button onclick="openBLB()">Search</button>
+  </div>
 
   <nav>
     <select id="bookSelect"></select>
     <select id="chapterSelect"></select>
     <button onclick="loadChapter()">Read</button>
-    
   </nav>
 
-  <div id="chapter" class="chapter active">
+  <div id="chapter" class="chapter">
     <div class="chapter-content" id="chapterContent">
-      
-      <h2></h2>
-      <p></p>
-      
+      <div id="typewriter"></div>
     </div>
   </div>
 
@@ -165,6 +189,7 @@
     const bookSelect = document.getElementById("bookSelect");
     const chapterSelect = document.getElementById("chapterSelect");
     const chapterContent = document.getElementById("chapterContent");
+    const typewriterDiv = document.getElementById("typewriter");
 
     // Populate book dropdown
     for (let book in books) {
@@ -185,7 +210,6 @@
       }
     });
 
-    // Initialize dropdowns
     bookSelect.value = "Genesis";
     bookSelect.dispatchEvent(new Event("change"));
 
@@ -217,17 +241,48 @@
           chapterContent.innerHTML = `<p>Failed to load. Try again later.</p>`;
         });
     }
-    
-  </script><script>
-  function openBLB() {
-    const word = document.getElementById("blbSearchInput").value.trim();
-    if (word.length === 0) {
-      alert("Please enter a word to look up.");
-      return;
+
+    function openBLB() {
+      const word = document.getElementById("blbSearchInput").value.trim();
+      if (word.length === 0) {
+        alert("Please enter a word to look up.");
+        return;
+      }
+      const url = `https://www.blueletterbible.org/search/search.cfm?Criteria=${encodeURIComponent(word)}&t=KJV`;
+      window.open(url, '_blank');
     }
-    const url = `https://www.blueletterbible.org/search/search.cfm?Criteria=${encodeURIComponent(word)}&t=KJV`;
-    window.open(url, '_blank');
-  }
-</script>
+
+    // Typewriter Effect
+    const messages = [
+      "Hello, how are you today...",
+      "Welcome...",
+      "Explore the Word of God.",
+      "Search a verse, or read a chapter...",
+      "Your journey begins here..."
+    ];
+
+    let msgIndex = 0;
+    let charIndex = 0;
+
+    function typeWriter() {
+      if (chapterContent.innerText.trim() !== "") return; // Stop if chapter is loaded
+      const currentMsg = messages[msgIndex];
+      if (charIndex < currentMsg.length) {
+        typewriterDiv.textContent += currentMsg.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 80);
+      } else {
+        setTimeout(() => {
+          typewriterDiv.textContent = '';
+          charIndex = 0;
+          msgIndex = (msgIndex + 1) % messages.length;
+          typeWriter();
+        }, 2000);
+      }
+    }
+
+    // Start animation on load
+    window.addEventListener("load", typeWriter);
+  </script>
 </body>
 </html>
